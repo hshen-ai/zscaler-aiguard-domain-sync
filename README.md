@@ -12,12 +12,43 @@ Because Zscaler continuously adds support for new AI applications, the required 
 
 ---
 
+## ⚙️ Quick Installation (Gemini CLI)
+
+### Install globally under your user account:
+```bash
+gemini skills install https://github.com/hshen-ai/zscaler-aiguard-domain-sync.git
+```
+
+### Enable the skill in your active session:
+```bash
+/skills reload
+```
+
+---
+
+## 🤖 Multi-Agent Compatibility (Gemini CLI, Claude Code, Cursor, Copilot)
+
+While this skill was natively designed, packaged, and tested on **Gemini CLI**, its modular and self-contained structure (comprising standard Markdown instructions and parameter-driven Python scripts) makes it highly compatible with other leading agentic software engineering assistants:
+
+### 1. Gemini CLI (Native)
+*   **Workflow:** Installs globally using `gemini skills install` and triggers automatically via session slash commands or natural language.
+*   **Sample Prompt:** *"sync AI Guard domains"*
+
+### 2. Claude Code (Anthropic) / Cursor IDE
+*   **Workflow:** These tools inherently read Markdown files within the workspace context. By cloning this repository into a `.claude/skills/` or general workspace directory, their AI models will parse the `SKILL.md` rules and autonomously execute the provided Python commands.
+*   **Sample Prompt:** *"Please execute the AI Guard domain sync procedure detailed in the skill markdown file."*
+
+### 3. GitHub Copilot Workspace
+*   **Workflow:** Mention `@workspace` and direct it to the `SKILL.md` guidelines. Copilot will synthesize a plan and run the terminal commands to process the sync.
+
+---
+
 ## Prerequisites
 
 1. **Python 3.7+** (No external `pip` packages required).
 2. **Zscaler ZIdentity (OneAPI) Credentials**: You need a Client ID and Secret that has read/write permissions to ZIA IP Destination Groups and the ability to activate configurations.
 
-## Quick Start (Manual Execution)
+## Manual Execution (Without an AI Agent)
 
 1. **Clone or Download** this directory.
 2. **Configure your environment**:
@@ -47,14 +78,14 @@ To ensure your firewall is continuously updated with the latest AI domains as so
 Create a shell script that loads the environment variables and calls Python:
 ```bash
 #!/bin/bash
-# /path/to/AIGuard-Domain-Sync/run_sync.sh
+# /path/to/zscaler-aiguard-domain-sync/run_sync.sh
 
 export ZSCALER_CLIENT_ID="your_client_id"
 export ZSCALER_CLIENT_SECRET="your_secret"
 export ZSCALER_VANITY_DOMAIN="your_vanity_domain"
 
 # Execute the python script
-/usr/bin/python3 /path/to/AIGuard-Domain-Sync/sync_domains.py
+/usr/bin/python3 /path/to/zscaler-aiguard-domain-sync/sync_domains.py
 ```
 Make it executable: `chmod +x run_sync.sh`
 
@@ -65,18 +96,5 @@ crontab -e
 ```
 Add the following line to run the synchronization every Sunday at 2:00 AM, appending the output to a log file:
 ```cron
-0 2 * * 0 /path/to/AIGuard-Domain-Sync/run_sync.sh >> /var/log/zscaler_aiguard_sync.log 2>&1
+0 2 * * 0 /path/to/zscaler-aiguard-domain-sync/run_sync.sh >> /var/log/zscaler_aiguard_sync.log 2>&1
 ```
-
----
-
-## Using as a Gemini CLI Skill
-
-If you are using Google's **Gemini CLI** (or a compatible AI CLI agent), you can import this script as an autonomous "Skill".
-
-A `SKILL.md` file is provided. Simply place the `SKILL.md` and `sync_domains.py` files into a dedicated skill folder in your Gemini environment (e.g., `~/.gemini/skills/aiguard-domain-sync/`).
-
-Once loaded, you can simply type:
-> *"sync AI Guard domains"*
-
-Your AI agent will read the context instructions, automatically authenticate, execute the script, and report the results back to you in plain english!
